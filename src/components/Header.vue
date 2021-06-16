@@ -14,18 +14,24 @@
         8 800 600 90 09
       </a>
 
-      <a class="header__cart" href="cart.html" aria-label="Корзина с товарами">
+      <router-link
+        class="header__cart"
+        href="cart.html"
+        aria-label="Корзина с товарами"
+        :to="{name: 'cart'}">
         <svg width="19" height="24">
           <use xlink:href="#icon-cart"></use>
         </svg>
-        <span class="header__count" aria-label="Количество товаров">3</span>
-      </a>
+        <span class="header__count" aria-label="Количество товаров">{{cartTotalQuantity()}}</span>
+      </router-link>
     </div>
   </header>
 </template>
 
 <script>
-export default {
+import { mapGetters } from 'vuex';
 
+export default {
+  methods: { ...mapGetters(['cartTotalQuantity']) },
 };
 </script>

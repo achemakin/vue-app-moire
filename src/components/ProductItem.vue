@@ -19,9 +19,8 @@
         <label class="colors__label">
           <input class="colors__radio sr-only"
             type="radio"
-            :value="item.color.id"
-            :checked="index === colorIndex"
-            @input="colorIndex = index">
+            :value="index"
+            v-model="colorIndex">
           <span class="colors__value" :style="{'background-color': item.color.code}">
           </span>
         </label>

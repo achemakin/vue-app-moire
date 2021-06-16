@@ -24,12 +24,12 @@
       <section class="catalog">
         <Preloader v-if="productsLoading" />
 
-        <div v-if="productsLoadingFailed">
+        <div v-else-if="productsLoadingFailed">
           Произошла ошибка загрузки товаров
           <button @click.prevent="loadProducts">Попробовать еще раз</button>
         </div>
 
-        <ul class="catalog__list" v-if="!productsLoading">
+        <ul class="catalog__list" v-else>
           <ProductItem v-for="product in products" :key="product.id" :product="product" />
         </ul>
 
