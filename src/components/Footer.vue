@@ -3,7 +3,10 @@
     <div class="footer__wrapper">
       <ul class="footer__links">
         <li>
-          <router-link class="footer__link" :to="{ name: 'home' }">
+          <router-link
+            class="footer__link"
+            :to="{ name: 'home' }"
+          >
             Каталог
           </router-link>
         </li>
@@ -95,6 +98,6 @@
 
 <script>
 export default {
-
+  name: 'Footer',
 };
 </script>

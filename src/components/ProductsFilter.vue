@@ -1,14 +1,29 @@
 <template>
   <aside class="filter">
-    <form class="filter__form form" action="#" method="get" @submit.prevent="submit">
+    <form
+      class="filter__form form"
+      action="#"
+      method="get"
+      @submit.prevent="submit"
+    >
       <fieldset class="form__block">
         <legend class="form__legend">Цена</legend>
         <label class="form__label form__label--price">
-          <input class="form__input" type="text" name="min-price" v-model.number="currentPriceFrom">
+          <input
+            class="form__input"
+            type="text"
+            name="min-price"
+            v-model.number="currentPriceFrom"
+          >
           <span class="form__value">От</span>
         </label>
         <label class="form__label form__label--price">
-          <input class="form__input" type="text" name="max-price" v-model.number="currentPriceTo">
+          <input
+            class="form__input"
+            type="text"
+            name="max-price"
+            v-model.number="currentPriceTo"
+          >
           <span class="form__value">До</span>
         </label>
       </fieldset>
@@ -16,12 +31,18 @@
       <fieldset class="form__block">
         <legend class="form__legend">Категория</legend>
         <label class="form__label form__label--select">
-          <select class="form__select" type="text" name="category" v-model="currentCategoryId">
+          <select
+            class="form__select"
+            type="text"
+            name="category"
+            v-model="currentCategoryId"
+          >
             <option value="0">Все категории</option>
             <option
               v-for="category in categories"
               :key="category.id"
-              :value="category.id">
+              :value="category.id"
+            >
               {{category.title}}
             </option>
           </select>
@@ -32,14 +53,23 @@
         <legend class="form__legend">Цвет</legend>
 
         <ul class="colors colors--black">
-          <li class="colors__item" v-for="color in colors" :key="color.id">
+          <li
+            class="colors__item"
+            v-for="color in colors"
+            :key="color.id"
+          >
             <label class="colors__label">
-              <input class="colors__radio sr-only"
+              <input
+                class="colors__radio sr-only"
                 type="checkbox"
                 name="colors[]"
                 :value="color.id"
-                v-model="currentColorsId">
-              <span class="colors__value" :style="{'background-color': color.code}">
+                v-model="currentColorsId"
+              >
+              <span
+                class="colors__value"
+                :style="{'background-color': color.code}"
+              >
               </span>
             </label>
           </li>
@@ -49,13 +79,19 @@
       <fieldset class="form__block">
         <legend class="form__legend">Материал</legend>
         <ul class="check-list">
-          <li class="check-list__item" v-for="material in materials" :key="material.id">
+          <li
+            class="check-list__item"
+            v-for="material in materials"
+            :key="material.id"
+          >
             <label class="check-list__label">
-              <input class="check-list__check sr-only"
+              <input
+                class="check-list__check sr-only"
                 type="checkbox"
                 name="materials[]"
                 :value="material.id"
-                v-model="currentMaterialsId">
+                v-model="currentMaterialsId"
+              >
               <span class="check-list__desc">
                 {{material.title}}
                 <span>({{material.productsCount}})</span>
@@ -68,13 +104,18 @@
       <fieldset class="form__block">
         <legend class="form__legend">Коллекция</legend>
         <ul class="check-list">
-          <li class="check-list__item" v-for="season in seasons" :key="season.id">
+          <li
+            class="check-list__item"
+            v-for="season in seasons"
+            :key="season.id"
+          >
             <label class="check-list__label">
               <input class="check-list__check sr-only"
                 type="checkbox"
                 name="collections[]"
                 :value="season.id"
-                v-model="currentSeasonsId">
+                v-model="currentSeasonsId"
+              >
               <span class="check-list__desc">
                 {{season.title}}
                 <span>({{season.productsCount}})</span>
@@ -84,14 +125,18 @@
         </ul>
       </fieldset>
 
-      <button class="filter__submit button button--primery" type="submit" >
+      <button
+        class="filter__submit button button--primery"
+        type="submit"
+      >
         Применить
       </button>
       <button
         class="filter__reset button button--second"
         type="button"
         v-if="isActiveBtnReset"
-        @click.prevent="reset">
+        @click.prevent="reset"
+      >
         Сбросить
       </button>
     </form>
@@ -103,6 +148,7 @@ import axios from 'axios';
 import { API_BASE_URL } from '../config';
 
 export default {
+  name: 'ProductsFilter',
   props: ['priceFrom', 'priceTo', 'categoryId', 'colorsId', 'materialsId', 'seasonsId'],
   data() {
     return {

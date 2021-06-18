@@ -14,8 +14,18 @@ export default new Vuex.Store({
     updateUserAccessKey(state, accessKey) {
       state.userAccessKey = accessKey;
     },
-    updateCartProducts(state, item) {
-      state.cartProducts = item;
+    updateCartProducts(state, items) {
+      state.cartProducts = items;
+    },
+    deleteCartProduct(state, itemId) {
+      state.cartProducts = state.cartProducts.filter((item) => item.id !== itemId);
+    },
+    updateCartProductQuantity(state, { itemId, quantity }) {
+      const item = state.cartProducts.find((i) => i.id === itemId);
+
+      if (item) {
+        item.quantity = quantity;
+      }
     },
   },
   actions: {
@@ -56,11 +66,53 @@ export default new Vuex.Store({
           context.commit('updateCartProducts', res.data.items);
         });
     },
+    deleteCartProduct(context, itemId) {
+      return axios
+        .delete(`${API_BASE_URL}/api/baskets/products`, {
+          params: {
+            userAccessKey: context.state.userAccessKey,
+          },
+          data: {
+            basketItemId: itemId,
+          },
+        })
+        .then(() => {
+          context.commit('deleteCartProduct', itemId);
+        });
+    },
+    updateCartProductQuantity(context, { itemId, quantity }) {
+      let response = null;
+
+      if (quantity >= 1) {
+        response = axios
+          .put(`${API_BASE_URL}/api/baskets/products`, {
+            basketItemId: itemId,
+            quantity,
+          }, {
+            params: {
+              userAccessKey: context.state.userAccessKey,
+            },
+          })
+          .then((res) => {
+            context.commit('updateCartProducts', res.data.items);
+          })
+          .catch(() => null);
+      }
+
+      return response;
+    },
   },
   getters: {
+    cartProducts(state) {
+      return state.cartProducts;
+    },
     cartTotalQuantity(state) {
       return state.cartProducts
         .reduce((acc, item) => item.quantity + acc, 0);
+    },
+    cartTotalPrice(state) {
+      return state.cartProducts
+        .reduce((acc, item) => (item.price * item.quantity) + acc, 0);
     },
   },
 });

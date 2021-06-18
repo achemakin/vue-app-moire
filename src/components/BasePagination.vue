@@ -5,7 +5,8 @@
               class="pagination__link pagination__link--arrow"
               :class="{'pagination__link--disabled': page === 1}"
               aria-label="Предыдущая страница"
-              @click.prevent="arrow('left')">
+              @click.prevent="arrow('left')"
+            >
               <svg width="8" height="14" fill="currentColor">
                 <use xlink:href="#icon-arrow-left"></use>
               </svg>
@@ -16,7 +17,8 @@
             <a href="#"
               class="pagination__link"
               :class="{'pagination__link--current': pageNumber === page}"
-              @click.prevent="paginate(pageNumber)">
+              @click.prevent="paginate(pageNumber)"
+            >
               {{ pageNumber }}
             </a>
           </li>
@@ -26,7 +28,8 @@
               class="pagination__link pagination__link--arrow"
               :class="{'pagination__link--disabled': page === pages}"
               aria-label="Следующая страница"
-              @click.prevent="arrow()">
+              @click.prevent="arrow()"
+            >
               <svg width="8" height="14" fill="currentColor">
                 <use xlink:href="#icon-arrow-right"></use>
               </svg>
@@ -37,6 +40,7 @@
 
 <script>
 export default {
+  name: 'BasePagination',
   model: {
     prop: 'page',
     event: 'paginate',

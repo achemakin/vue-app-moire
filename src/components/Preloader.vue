@@ -9,10 +9,12 @@
 </template>
 
 <script>
-export default {};
+export default {
+  name: 'Preloader',
+};
 </script>
 
-<style>
+<style scoped>
 .preloader {
   display: flex;
   justify-content: center;

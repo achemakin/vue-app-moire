@@ -19,21 +19,29 @@
         :category-id.sync="filterCategoryId"
         :colors-id.sync="filterColors"
         :materials-id.sync="filterMaterials"
-        :seasons-id.sync="filterSeasons" />
+        :seasons-id.sync="filterSeasons"
+      />
 
       <section class="catalog">
         <Preloader v-if="productsLoading" />
 
-        <div v-else-if="productsLoadingFailed">
-          Произошла ошибка загрузки товаров
-          <button @click.prevent="loadProducts">Попробовать еще раз</button>
-        </div>
+        <ErrorLoad
+          v-else-if="productsLoadingFailed"
+          :load="loadProducts"
+        />
 
         <ul class="catalog__list" v-else>
-          <ProductItem v-for="product in products" :key="product.id" :product="product" />
+          <ProductItem
+            v-for="product in products"
+            :key="product.id"
+            :product="product"
+          />
         </ul>
 
-        <BasePagination v-model="page" :pages="pagination.pages" />
+        <BasePagination
+          v-model="page"
+          :pages="pagination.pages"
+        />
       </section>
     </div>
   </main>
@@ -45,15 +53,18 @@ import { page, limit, API_BASE_URL } from '@/config';
 import declOfNum from '@/helpers/declOfNum';
 import ProductItem from '@/components/ProductItem.vue';
 import Preloader from '@/components/Preloader.vue';
-import BasePagination from '../components/BasePagination.vue';
-import ProductsFilter from '../components/ProductsFilter.vue';
+import BasePagination from '@/components/BasePagination.vue';
+import ProductsFilter from '@/components/ProductsFilter.vue';
+import ErrorLoad from '@/components/ErrorLoad.vue';
 
 export default {
+  name: 'HomePage',
   components: {
     ProductItem,
     BasePagination,
     ProductsFilter,
     Preloader,
+    ErrorLoad,
   },
   data() {
     return {
@@ -103,7 +114,7 @@ export default {
             this.productsData = res.data;
           })
           .catch(() => { this.productsLoadingFailed = true; })
-          .then(() => { this.productsLoading = false; });
+          .finally(() => { this.productsLoading = false; });
       }, 0);
     },
   },

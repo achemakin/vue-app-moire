@@ -1,32 +1,32 @@
 <template>
-  <div class="load">
-    <div class="line"></div>
-    <div class="line"></div>
-    <div class="line"></div>
+  <div class="preloader">
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
   </div>
 </template>
 
 <script>
 export default {
-
+  name: 'PreloaderForButton',
 };
 </script>
 
-<style>
-.line {
+<style scoped>
+.item {
   display: inline-block;
   width: 15px;
   height: 15px;
   border-radius: 15px;
   background-color: #4b9cdb;
 }
-.load .line:nth-last-child(1) {
+.preloader .item:nth-last-child(1) {
   animation: loading 1.5s 1s infinite;
 }
-.load .line:nth-last-child(2) {
+.preloader .item:nth-last-child(2) {
   animation: loading 1.5s 0.5s infinite;
 }
-.load .line:nth-last-child(3) {
+.preloader .item:nth-last-child(3) {
   animation: loading 1.5s 0s infinite;
 }
 @keyframes loading {
