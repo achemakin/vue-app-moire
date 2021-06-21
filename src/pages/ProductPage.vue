@@ -9,7 +9,15 @@
 
     <div v-else>
       <div class="content__top">
-        <BaseBreadcrumbs :items="[product.category.title, product.title]" />
+        <BaseBreadcrumbs :items="[
+          {
+            name: 'home',
+            title: product.category.title,
+          },
+          {
+            title: product.title
+          },
+        ]" />
       </div>
 
       <CurrentProductItem

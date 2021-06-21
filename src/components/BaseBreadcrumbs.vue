@@ -15,14 +15,14 @@
     >
       <router-link
         class="breadcrumbs__link"
-        :to="{name: 'home'}"
+        :to="{name: item.name}"
       >
-        {{item}}
+        {{item.title}}
       </router-link>
     </li>
     <li class="breadcrumbs__item">
       <a class="breadcrumbs__link">
-        {{lastItem}}
+        {{lastItem.title}}
       </a>
     </li>
   </ul>

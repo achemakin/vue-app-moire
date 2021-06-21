@@ -1,7 +1,7 @@
 <template>
 <main class="content container">
     <div class="content__top">
-      <BaseBreadcrumbs :items="['Корзина']" />
+      <BaseBreadcrumbs :items="[{title: 'Корзина'}]" />
 
       <div class="content__row">
         <h1 class="content__title">
@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <section class="cart">
+    <section class="cart" v-if="totalQuantity">
       <form
         class="cart__form form"
         action="#"
