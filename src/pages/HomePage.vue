@@ -1,7 +1,6 @@
 <template>
   <main class="content container">
     <div class="content__top">
-
       <div class="content__row">
         <h1 class="content__title">
           Каталог
@@ -9,6 +8,22 @@
         <span class="content__info">
           {{ pagination.total }} {{ declOfNum(pagination.total, ['товар', 'товара', 'товаров']) }}
         </span>
+        <div class="content__switch-limit">
+          Количество карточек товара:
+          <select
+            name="limit"
+            v-model="currentIndexLimit"
+          >
+            <option
+              v-for="(item, index) in limit"
+              :key="index"
+              :value="index"
+              :selected="index === currentIndexLimit"
+            >
+              {{item}}
+            </option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -30,7 +45,11 @@
           :load="loadProducts"
         />
 
-        <ul class="catalog__list" v-else>
+        <ul
+          class="catalog__list"
+          :class="{'size-12': limit[currentIndexLimit] >= 12}"
+          v-else
+        >
           <ProductItem
             v-for="product in products"
             :key="product.id"
@@ -48,8 +67,8 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { page, limit, API_BASE_URL } from '@/config';
+import { page, limit } from '@/config';
+import { mapActions } from 'vuex';
 import declOfNum from '@/helpers/declOfNum';
 import ProductItem from '@/components/ProductItem.vue';
 import Preloader from '@/components/Preloader.vue';
@@ -70,6 +89,7 @@ export default {
     return {
       page,
       limit,
+      currentIndexLimit: 0,
       productsData: null,
 
       filterPriceFrom: 0,
@@ -92,26 +112,25 @@ export default {
     },
   },
   methods: {
+    ...mapActions({ getProducts: 'getProducts' }),
     declOfNum,
     loadProducts() {
       this.productsLoading = true;
       this.productsLoadingFailed = false;
       clearTimeout(this.loadProductsTimer);
       this.loadProductsTimer = setTimeout(() => {
-        axios.get(`${API_BASE_URL}/api/products`, {
-          params: {
-            page: this.page,
-            limit: this.limit,
-            categoryId: this.filterCategoryId,
-            materialIds: this.filterMaterials,
-            seasonIds: this.filterSeasons,
-            colorIds: this.filterColors,
-            minPrice: this.filterPriceFrom,
-            maxPrice: this.filterPriceTo,
-          },
+        this.getProducts({
+          page: this.page,
+          limit: this.limit[this.currentIndexLimit],
+          categoryId: this.filterCategoryId,
+          materialIds: this.filterMaterials,
+          seasonIds: this.filterSeasons,
+          colorIds: this.filterColors,
+          minPrice: this.filterPriceFrom,
+          maxPrice: this.filterPriceTo,
         })
-          .then((res) => {
-            this.productsData = res.data;
+          .then((data) => {
+            this.productsData = data;
           })
           .catch(() => { this.productsLoadingFailed = true; })
           .finally(() => { this.productsLoading = false; });
@@ -122,7 +141,7 @@ export default {
     page() {
       this.loadProducts();
     },
-    limit() {
+    currentIndexLimit() {
       this.loadProducts();
     },
     filterCategoryId() {
@@ -149,3 +168,14 @@ export default {
   },
 };
 </script>
+
+<style>
+  .content__switch-limit {
+    flex: 1 1 auto;
+    text-align: end;
+  }
+
+  .catalog__list.size-12 {
+    grid-template-columns: repeat(4, 200px);
+  }
+</style>

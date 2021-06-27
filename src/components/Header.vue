@@ -29,8 +29,9 @@
         <span
           class="header__count"
           aria-label="Количество товаров"
+          v-if="cartIndicator"
         >
-          {{cartTotalQuantity()}}
+          {{cartIndicator}}
         </span>
       </router-link>
     </div>
@@ -42,6 +43,11 @@ import { mapGetters } from 'vuex';
 
 export default {
   name: 'Header',
-  methods: { ...mapGetters(['cartTotalQuantity']) },
+  computed: {
+    cartIndicator() {
+      return this.cartProducts().length;
+    },
+  },
+  methods: { ...mapGetters(['cartProducts']) },
 };
 </script>

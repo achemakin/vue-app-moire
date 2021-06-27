@@ -1,16 +1,7 @@
 <template>
   <main class="content container">
     <div class="content__top">
-      <BaseBreadcrumbs
-        :items="[{
-            name: 'cart',
-            title: 'Корзина'
-          },
-          {
-            title: 'Оформление заказа'
-          }
-        ]"
-      />
+      <BaseBreadcrumbs :items="linkItems" />
 
       <div class="content__row">
         <h1 class="content__title">
@@ -30,21 +21,21 @@
           <div class="cart__data">
             <BaseFormText
               title="ФИО"
-              placeholder="Введите ваше полное имя"
+              placeholder="Иванов Иван Иванович"
               v-model="formData.name"
               :error="formError.name"
             />
 
             <BaseFormText
               title="Адрес доставки"
-              placeholder="Введите ваш адрес"
+              placeholder="163000 г. Архангельск, ул. Я.Тимме, д.20, кв.5"
               v-model="formData.address"
               :error="formError.address"
             />
 
             <BaseFormText
               title="Телефон"
-              placeholder="Введите ваш телефон"
+              placeholder="+79990900000"
               type="tel"
               v-model="formData.phone"
               :error="formError.phone"
@@ -52,7 +43,7 @@
 
             <BaseFormText
               title="Email"
-              placeholder="Введи ваш Email"
+              placeholder="example@mail.ru"
               type="email"
               v-model="formData.email"
               :error="formError.email"
@@ -136,9 +127,7 @@ import BaseFormTextarea from '@/components/BaseFormTextarea.vue';
 import OrderCartBlock from '@/components/OrderCartBlock.vue';
 import OrderError from '@/components/OrderError.vue';
 import numberFormat from '@/helpers/numberFormat';
-import axios from 'axios';
-import { mapGetters } from 'vuex';
-import { API_BASE_URL } from '../config';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'OrderPage',
@@ -159,6 +148,10 @@ export default {
       currentPaymentTypeId: null,
       formErrorMessage: '',
       loading: false,
+      linkItems: [
+        { name: 'cart', title: 'Корзина' },
+        { title: 'Оформление заказа' },
+      ],
     };
   },
   computed: {
@@ -177,50 +170,43 @@ export default {
     numberFormat,
   },
   methods: {
+    ...mapActions({
+      addOrder: 'addOrder',
+      getDeliveries: 'getDeliveries',
+      getPayments: 'getPayments',
+    }),
     order() {
       this.formError = {};
       this.formErrorMessage = '';
       this.loading = true;
 
-      axios
-        .post(`${API_BASE_URL}/api/orders`, {
-          ...this.formData,
-          deliveryTypeId: this.currentDeliveryTypeId,
-          paymentTypeId: this.currentPaymentTypeId,
-        }, {
-          params: {
-            userAccessKey: this.$store.state.userAccessKey,
-          },
-        })
-        .then((res) => {
-          this.$store.commit('resetCart');
-          this.$store.commit('updateOrderInfo', res.data);
-          this.$router.push({ name: 'orderInfo', params: { id: res.data.id } });
+      this.addOrder({
+        ...this.formData,
+        deliveryTypeId: this.currentDeliveryTypeId,
+        paymentTypeId: this.currentPaymentTypeId,
+      })
+        .then((data) => {
+          this.$router.push({ name: 'orderInfo', params: { id: data.id } });
         })
         .catch((error) => {
-          this.formError = error.response.data.error.request || {};
-          this.formErrorMessage = error.response.data.error.message;
+          this.formError = error.request || {};
+          this.formErrorMessage = error.message;
         })
         .then(() => {
           this.loading = false;
         });
     },
     loadDeliveries() {
-      axios.get(`${API_BASE_URL}/api/deliveries`)
-        .then((res) => {
-          this.orderDeliveries = res.data;
+      this.getDeliveries()
+        .then((data) => {
+          this.orderDeliveries = data;
           this.currentDeliveryTypeId = this.orderDeliveries[0].id;
         });
     },
     loadPayments() {
-      axios
-        .get(`${API_BASE_URL}/api/payments`, {
-          params: {
-            deliveryTypeId: this.currentDeliveryTypeId ?? 1,
-          },
-        })
-        .then((res) => {
-          this.orderPayments = res.data;
+      this.getPayments(this.currentDeliveryTypeId)
+        .then((data) => {
+          this.orderPayments = data;
           this.currentPaymentTypeId = this.orderPayments[0].id;
         });
     },

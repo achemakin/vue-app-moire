@@ -1,7 +1,7 @@
 <template>
 <main class="content container">
     <div class="content__top">
-      <BaseBreadcrumbs :items="[{title: 'Корзина'}]" />
+      <BaseBreadcrumbs :items="linkItems" />
 
       <div class="content__row">
         <h1 class="content__title">
@@ -59,6 +59,11 @@ import declOfNum from '@/helpers/declOfNum';
 export default {
   name: 'CartPage',
   components: { BaseBreadcrumbs, CartItem },
+  data() {
+    return {
+      linkItems: [{ title: 'Корзина' }],
+    };
+  },
   computed: {
     ...mapGetters({
       cartProducts: 'cartProducts',

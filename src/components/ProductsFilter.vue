@@ -144,8 +144,7 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'ProductsFilter',
@@ -212,28 +211,34 @@ export default {
       this.currentMaterialsId = [];
       this.currentSeasonsId = [];
     },
+    ...mapActions({
+      getCategories: 'getCategories',
+      getColors: 'getColors',
+      getMaterials: 'getMaterials',
+      getSeasons: 'getSeasons',
+    }),
     loadCategories() {
-      axios.get(`${API_BASE_URL}/api/productCategories`)
-        .then((res) => {
-          this.categoriesData = res.data;
+      this.getCategories()
+        .then((data) => {
+          this.categoriesData = data;
         });
     },
     loadColors() {
-      axios.get(`${API_BASE_URL}/api/colors`)
-        .then((res) => {
-          this.colorsData = res.data;
+      this.getColors()
+        .then((data) => {
+          this.colorsData = data;
         });
     },
     loadMaterials() {
-      axios.get(`${API_BASE_URL}/api/materials`)
-        .then((res) => {
-          this.materialsData = res.data;
+      this.getMaterials()
+        .then((data) => {
+          this.materialsData = data;
         });
     },
     loadSeasons() {
-      axios.get(`${API_BASE_URL}/api/seasons`)
-        .then((res) => {
-          this.seasonsData = res.data;
+      this.getSeasons()
+        .then((data) => {
+          this.seasonsData = data;
         });
     },
   },

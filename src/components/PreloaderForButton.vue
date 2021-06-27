@@ -13,6 +13,9 @@ export default {
 </script>
 
 <style scoped>
+.preloader {
+  text-align: center;
+}
 .item {
   display: inline-block;
   width: 15px;

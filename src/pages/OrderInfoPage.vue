@@ -1,6 +1,8 @@
 <template>
   <main class="content container" v-if="order">
     <div class="content__top">
+      <BaseBreadcrumbs :items="linkItems" />
+
       <h1 class="content__title">
         Заказ оформлен <span>№ {{order.id}}</span>
       </h1>
@@ -44,7 +46,7 @@
         </div>
 
         <OrderCartBlock
-          :items="order.basket.items"
+          :items="order.basket && order.basket.items"
           :totalQuantity="totalQuantity"
           :totalPrice="order.totalPrice"
           :deliveryPrice="+order.deliveryType.price"
@@ -56,12 +58,18 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import BaseBreadcrumbs from '@/components/BaseBreadcrumbs.vue';
 import OrderInfoDictionary from '@/components/OrderInfoDictionary.vue';
 import OrderCartBlock from '@/components/OrderCartBlock.vue';
 
 export default {
-  name: 'OrderInfo',
-  components: { OrderInfoDictionary, OrderCartBlock },
+  name: 'OrderInfoPage',
+  data() {
+    return {
+      linkItems: [{ title: 'Заказ оформлен' }],
+    };
+  },
+  components: { OrderInfoDictionary, OrderCartBlock, BaseBreadcrumbs },
   computed: {
     ...mapGetters({ order: 'orderInfo', totalQuantity: 'orderTotalQuantity' }),
   },

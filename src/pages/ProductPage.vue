@@ -9,15 +9,7 @@
 
     <div v-else>
       <div class="content__top">
-        <BaseBreadcrumbs :items="[
-          {
-            name: 'home',
-            title: product.category.title,
-          },
-          {
-            title: product.title
-          },
-        ]" />
+        <BaseBreadcrumbs :items="linkItems" />
       </div>
 
       <CurrentProductItem
@@ -33,8 +25,7 @@ import Preloader from '@/components/Preloader.vue';
 import ErrorLoad from '@/components/ErrorLoad.vue';
 import BaseBreadcrumbs from '@/components/BaseBreadcrumbs.vue';
 import CurrentProductItem from '@/components/CurrentProductItem.vue';
-import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'ProductPage',
@@ -51,40 +42,40 @@ export default {
 
       productLoading: false,
       productLoadingFailed: false,
+
     };
   },
   computed: {
     product() {
       return this.productData ?? [];
     },
+    linkItems() {
+      return [
+        { name: 'home', title: this.product.category.title },
+        { title: this.product.title },
+      ];
+    },
   },
   methods: {
+    ...mapActions({
+      getDeliveries: 'getDeliveries',
+      getProduct: 'getProduct',
+    }),
     loadProduct() {
       this.productLoading = true;
       this.productLoadingFailed = false;
-      axios.get(`${API_BASE_URL}/api/products/${this.$route.params.id}`)
-        .then((res) => {
-          this.productData = res.data;
-          this.productData.colors.forEach((element, index) => {
-            if (!element.gallery) {
-              this.productData.colors[index].gallery = [{ file: { url: '#' } }];
-            }
-            element.gallery.push(
-              {
-                file: { url: 'https://via.placeholder.com/570/0000FF/808080?text=Test_Image_1' },
-              },
-              {
-                file: { url: 'https://via.placeholder.com/570/FFFF00/000000?text=Test_Image_2' },
-              },
-            );
-          });
+      this.getProduct(this.$route.params.id)
+        .then((data) => {
+          this.productData = data;
         })
         .catch(() => { this.productLoadingFailed = true; })
         .finally(() => { this.productLoading = false; });
     },
     loadDeliveries() {
-      axios.get(`${API_BASE_URL}/api/deliveries`)
-        .then((res) => { this.productDeliveries = res.data; });
+      this.getDeliveries()
+        .then((data) => {
+          this.productDeliveries = data;
+        });
     },
   },
   watch: {

@@ -243,7 +243,7 @@ export default {
     numberFormat,
   },
   methods: {
-    ...mapActions(['addProductToCart']),
+    ...mapActions({ addProductToCart: 'addProductToCart' }),
     addToCart() {
       this.productAdded = false;
       this.productAddSending = true;
